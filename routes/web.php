@@ -46,9 +46,9 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     // Infraestructura y Seguridad (API)
-    Route::apiResource('personas', PersonaController::class);
-    Route::apiResource('usuarios', UsuarioController::class);
-    Route::apiResource('roles', RolController::class);
+    Route::resource('personas', PersonaController::class);
+    Route::resource('usuarios', UsuarioController::class);
+    Route::resource('roles', RolController::class);
     Route::get('bitacoras', [BitacoraController::class, 'index']);
     Route::get('bitacoras/{bitacora}', [BitacoraController::class, 'show']);
 

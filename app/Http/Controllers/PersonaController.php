@@ -12,8 +12,16 @@ class PersonaController extends Controller
      */
     public function index()
     {
-        $personas = Persona::with('usuario')->paginate(15);
-        return response()->json($personas);
+        $personas = Persona::paginate(10);
+        return view('personas.index', compact('personas'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('personas.create');
     }
 
     /**
@@ -28,20 +36,18 @@ class PersonaController extends Controller
             'telefono' => ['nullable', 'string', 'max:20'],
         ]);
 
-        $persona = Persona::create($validated);
+        Persona::create($validated);
 
-        return response()->json([
-            'message' => 'Persona creada exitosamente',
-            'data' => $persona
-        ], 201);
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona creada exitosamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the specified resource.
      */
-    public function show(Persona $persona)
+    public function edit(Persona $persona)
     {
-        return response()->json($persona->load('usuario'));
+        return view('personas.edit', compact('persona'));
     }
 
     /**
@@ -58,10 +64,8 @@ class PersonaController extends Controller
 
         $persona->update($validated);
 
-        return response()->json([
-            'message' => 'Persona actualizada exitosamente',
-            'data' => $persona
-        ]);
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona actualizada exitosamente.');
     }
 
     /**
@@ -69,10 +73,14 @@ class PersonaController extends Controller
      */
     public function destroy(Persona $persona)
     {
+        if ($persona->usuario()->exists()) {
+            return redirect()->route('personas.index')
+                ->with('error', 'No se puede eliminar la persona porque tiene un usuario asociado.');
+        }
+
         $persona->delete();
 
-        return response()->json([
-            'message' => 'Persona eliminada exitosamente'
-        ]);
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona eliminada exitosamente.');
     }
 }

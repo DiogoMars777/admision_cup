@@ -12,8 +12,16 @@ class RolController extends Controller
      */
     public function index()
     {
-        $roles = Rol::all();
-        return response()->json($roles);
+        $roles = Rol::paginate(10);
+        return view('roles.index', compact('roles'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('roles.create');
     }
 
     /**
@@ -26,20 +34,18 @@ class RolController extends Controller
             'descripcion' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $rol = Rol::create($validated);
+        Rol::create($validated);
 
-        return response()->json([
-            'message' => 'Rol creado exitosamente',
-            'data' => $rol
-        ], 201);
+        return redirect()->route('roles.index')
+            ->with('success', 'Rol creado exitosamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the specified resource.
      */
-    public function show(Rol $rol)
+    public function edit(Rol $rol)
     {
-        return response()->json($rol);
+        return view('roles.edit', compact('rol'));
     }
 
     /**
@@ -54,10 +60,8 @@ class RolController extends Controller
 
         $rol->update($validated);
 
-        return response()->json([
-            'message' => 'Rol actualizado exitosamente',
-            'data' => $rol
-        ]);
+        return redirect()->route('roles.index')
+            ->with('success', 'Rol actualizado exitosamente.');
     }
 
     /**
@@ -67,15 +71,13 @@ class RolController extends Controller
     {
         // Evitar eliminar roles si tienen usuarios asignados
         if ($rol->usuarios()->exists()) {
-            return response()->json([
-                'error' => 'No se puede eliminar el rol porque tiene usuarios asociados'
-            ], 400);
+            return redirect()->route('roles.index')
+                ->with('error', 'No se puede eliminar el rol porque tiene usuarios asociados.');
         }
 
         $rol->delete();
 
-        return response()->json([
-            'message' => 'Rol eliminado exitosamente'
-        ]);
+        return redirect()->route('roles.index')
+            ->with('success', 'Rol eliminado exitosamente.');
     }
 }
