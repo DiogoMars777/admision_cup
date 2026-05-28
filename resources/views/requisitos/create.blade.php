@@ -1,67 +1,47 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Asignar Requisito a Postulante') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Asignar Requisito a Postulante</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('requisitos.store') }}" method="POST" class="space-y-6">
-                        @csrf
-
-                        <!-- Postulante -->
-                        <div>
-                            <x-input-label for="id_postulante" :value="__('Seleccionar Postulante')" />
-                            <select id="id_postulante" name="id_postulante" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required autofocus>
-                                <option value="">-- Seleccionar Postulante --</option>
-                                @foreach($postulantes as $postulante)
-                                    <option value="{{ $postulante->id }}" {{ old('id_postulante') == $postulante->id ? 'selected' : '' }}>
-                                        {{ $postulante->nombre }} {{ $postulante->paterno }} (CI: {{ $postulante->ci }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('id_postulante')" />
-                        </div>
-
-                        <!-- Nombre del Requisito -->
-                        <div>
-                            <x-input-label for="nombre" :value="__('Documento / Requisito')" />
-                            <x-text-input id="nombre" name="nombre" type="text" class="mt-1 block w-full" :value="old('nombre')" required placeholder="Ej. Certificado de Bachiller, Fotocopia de C.I." />
-                            <x-input-error class="mt-2" :messages="$errors->get('nombre')" />
-                        </div>
-
-                        <!-- Descripción -->
-                        <div>
-                            <x-input-label for="descripcion" :value="__('Observaciones / Descripción (Opcional)')" />
-                            <textarea id="descripcion" name="descripcion" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="Ej. Presenta fotocopia simple legalizada.">{{ old('descripcion') }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('descripcion')" />
-                        </div>
-
-                        <!-- Estado -->
-                        <div>
-                            <x-input-label for="estado" :value="__('Estado de la Entrega')" />
-                            <select id="estado" name="estado" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                <option value="Pendiente" {{ old('estado') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                <option value="Entregado" {{ old('estado') == 'Entregado' ? 'selected' : '' }}>Entregado</option>
-                                <option value="Rechazado" {{ old('estado') == 'Rechazado' ? 'selected' : '' }}>Rechazado</option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('estado')" />
-                        </div>
-
-                        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
-                            <a href="{{ route('requisitos.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                                Cancelar
-                            </a>
-                            <x-primary-button>
-                                {{ __('Guardar Requisito') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+    <div class="content-card" style="max-width: 640px;">
+        <div class="content-card-header"><h3>📋 Nuevo Requisito</h3></div>
+        <div class="content-card-body" style="padding: 28px;">
+            <form action="{{ route('requisitos.store') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label class="form-label">Seleccionar Postulante</label>
+                    <select name="id_postulante" class="form-select" required>
+                        <option value="">— Seleccionar Postulante —</option>
+                        @foreach($postulantes as $p)
+                            <option value="{{ $p->id }}" {{ old('id_postulante') == $p->id ? 'selected' : '' }}>
+                                {{ $p->nombre }} {{ $p->paterno ?? '' }} (CI: {{ $p->ci }})
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('id_postulante') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Documento / Requisito</label>
+                    <input type="text" name="nombre" class="form-input" value="{{ old('nombre') }}" required placeholder="Ej. Certificado de Bachiller">
+                    @error('nombre') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observaciones (Opcional)</label>
+                    <textarea name="descripcion" rows="3" class="form-textarea" placeholder="Ej. Fotocopia simple legalizada">{{ old('descripcion') }}</textarea>
+                    @error('descripcion') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Estado de la Entrega</label>
+                    <select name="estado" class="form-select" required>
+                        <option value="Pendiente" {{ old('estado') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="Entregado" {{ old('estado') == 'Entregado' ? 'selected' : '' }}>Entregado</option>
+                        <option value="Rechazado" {{ old('estado') == 'Rechazado' ? 'selected' : '' }}>Rechazado</option>
+                    </select>
+                    @error('estado') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+                    <a href="{{ route('requisitos.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Requisito</button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

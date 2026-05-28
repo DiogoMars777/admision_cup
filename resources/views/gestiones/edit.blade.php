@@ -1,92 +1,60 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Editar Planificación Académica') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Editar Planificación Académica</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('gestiones.update', $gestion_academica) }}" method="POST" class="space-y-6">
-                        @csrf
-                        @method('PUT')
+    <div class="content-card" style="max-width: 640px;">
+        <div class="content-card-header">
+            <h3>✏️ Editar: {{ $gestion->nombre }}</h3>
+        </div>
+        <div class="content-card-body" style="padding: 28px;">
+            <form action="{{ route('gestiones.update', $gestion) }}" method="POST">
+                @csrf @method('PUT')
 
-                        <!-- Nombre de la Gestión -->
-                        <div>
-                            <x-input-label for="nombre" :value="__('Nombre de la Convocatoria / Gestión')" />
-                            <x-text-input id="nombre" name="nombre" type="text" class="mt-1 block w-full" :value="old('nombre', $gestion_academica->nombre)" required autofocus />
-                            <x-input-error class="mt-2" :messages="$errors->get('nombre')" />
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Año -->
-                            <div>
-                                <x-input-label for="año" :value="__('Año Académico')" />
-                                <x-text-input id="año" name="año" type="number" class="mt-1 block w-full" :value="old('año', $gestion_academica->año)" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('año')" />
-                            </div>
-
-                            <!-- Periodo -->
-                            <div>
-                                <x-input-label for="periodo" :value="__('Periodo')" />
-                                <x-text-input id="periodo" name="periodo" type="text" class="mt-1 block w-full" :value="old('periodo', $gestion_academica->periodo)" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('periodo')" />
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Fecha Inicio -->
-                            <div>
-                                <x-input-label for="fecha_ini" :value="__('Fecha de Inicio')" />
-                                <x-text-input id="fecha_ini" name="fecha_ini" type="date" class="mt-1 block w-full" :value="old('fecha_ini', $gestion_academica->fecha_ini)" />
-                                <x-input-error class="mt-2" :messages="$errors->get('fecha_ini')" />
-                            </div>
-
-                            <!-- Fecha Fin -->
-                            <div>
-                                <x-input-label for="fecha_fin" :value="__('Fecha de Cierre')" />
-                                <x-text-input id="fecha_fin" name="fecha_fin" type="date" class="mt-1 block w-full" :value="old('fecha_fin', $gestion_academica->fecha_fin)" />
-                                <x-input-error class="mt-2" :messages="$errors->get('fecha_fin')" />
-                            </div>
-                        </div>
-
-                        <!-- Estado -->
-                        <div>
-                            <x-input-label for="estado" :value="__('Estado')" />
-                            <select id="estado" name="estado" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="Activo" {{ old('estado', $gestion_academica->estado) == 'Activo' ? 'selected' : '' }}>Activo</option>
-                                <option value="Inactivo" {{ old('estado', $gestion_academica->estado) == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('estado')" />
-                        </div>
-
-                        <!-- Postulante Asociado (Opcional) -->
-                        <div>
-                            <x-input-label for="id_postulante" :value="__('Persona/Postulante Asignado (Opcional)')" />
-                            <select id="id_postulante" name="id_postulante" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="">-- Seleccionar Persona --</option>
-                                @foreach($postulantes as $postulante)
-                                    <option value="{{ $postulante->id }}" {{ old('id_postulante', $gestion_academica->id_postulante) == $postulante->id ? 'selected' : '' }}>
-                                        {{ $postulante->nombre }} {{ $postulante->paterno }} (CI: {{ $postulante->ci }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('id_postulante')" />
-                        </div>
-
-                        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
-                            <a href="{{ route('gestiones.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                                Cancelar
-                            </a>
-                            <x-primary-button>
-                                {{ __('Actualizar Planificación') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label class="form-label">Nombre de la Convocatoria</label>
+                    <input type="text" name="nombre" class="form-input" value="{{ old('nombre', $gestion->nombre) }}" required>
+                    @error('nombre') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
-            </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Año Académico</label>
+                        <input type="number" name="año" class="form-input" value="{{ old('año', $gestion->año) }}" required>
+                        @error('año') <p class="form-error">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Periodo</label>
+                        <input type="text" name="periodo" class="form-input" value="{{ old('periodo', $gestion->periodo) }}" required>
+                        @error('periodo') <p class="form-error">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Fecha de Inicio</label>
+                        <input type="date" name="fecha_ini" class="form-input" value="{{ old('fecha_ini', $gestion->fecha_ini) }}">
+                        @error('fecha_ini') <p class="form-error">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha de Cierre</label>
+                        <input type="date" name="fecha_fin" class="form-input" value="{{ old('fecha_fin', $gestion->fecha_fin) }}">
+                        @error('fecha_fin') <p class="form-error">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-select">
+                        <option value="Activo" {{ old('estado', $gestion->estado) == 'Activo' ? 'selected' : '' }}>Activo</option>
+                        <option value="Inactivo" {{ old('estado', $gestion->estado) == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
+                    </select>
+                    @error('estado') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+                    <a href="{{ route('gestiones.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Actualizar Planificación</button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

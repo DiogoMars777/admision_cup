@@ -1,51 +1,32 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Editar Aula') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Editar Aula</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('aulas.update', $aula) }}" method="POST" class="space-y-6">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Número de Aula -->
-                        <div>
-                            <x-input-label for="aula_nro" :value="__('Número de Aula / Identificador')" />
-                            <x-text-input id="aula_nro" name="aula_nro" type="text" class="mt-1 block w-full" :value="old('aula_nro', $aula->aula_nro)" required autofocus />
-                            <x-input-error class="mt-2" :messages="$errors->get('aula_nro')" />
-                        </div>
-
-                        <!-- Capacidad -->
-                        <div>
-                            <x-input-label for="capacidad" :value="__('Capacidad Máxima')" />
-                            <x-text-input id="capacidad" name="capacidad" type="number" class="mt-1 block w-full" :value="old('capacidad', $aula->capacidad)" required min="1" />
-                            <p class="text-xs text-gray-500 mt-1">Debe ser un número entero positivo mayor a cero.</p>
-                            <x-input-error class="mt-2" :messages="$errors->get('capacidad')" />
-                        </div>
-
-                        <!-- Tipo de Aula -->
-                        <div>
-                            <x-input-label for="tipo_aula" :value="__('Tipo de Aula (Opcional)')" />
-                            <x-text-input id="tipo_aula" name="tipo_aula" type="text" class="mt-1 block w-full" :value="old('tipo_aula', $aula->tipo_aula)" />
-                            <x-input-error class="mt-2" :messages="$errors->get('tipo_aula')" />
-                        </div>
-
-                        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
-                            <a href="{{ route('aulas.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                                Cancelar
-                            </a>
-                            <x-primary-button>
-                                {{ __('Actualizar Aula') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+    <div class="content-card" style="max-width: 640px;">
+        <div class="content-card-header"><h3>✏️ Editar Aula: {{ $aula->aula_nro }}</h3></div>
+        <div class="content-card-body" style="padding: 28px;">
+            <form action="{{ route('aulas.update', $aula) }}" method="POST">
+                @csrf @method('PUT')
+                <div class="form-group">
+                    <label class="form-label">Número de Aula</label>
+                    <input type="text" name="aula_nro" class="form-input" value="{{ old('aula_nro', $aula->aula_nro) }}" required>
+                    @error('aula_nro') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Capacidad Máxima</label>
+                    <input type="number" name="capacidad" class="form-input" value="{{ old('capacidad', $aula->capacidad) }}" required min="1">
+                    <p class="form-hint">Debe ser un número entero positivo mayor a cero.</p>
+                    @error('capacidad') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Aula</label>
+                    <input type="text" name="tipo_aula" class="form-input" value="{{ old('tipo_aula', $aula->tipo_aula) }}">
+                    @error('tipo_aula') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+                    <a href="{{ route('aulas.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Actualizar Aula</button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

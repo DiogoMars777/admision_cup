@@ -51,6 +51,10 @@
                     <button type="submit" class="login-btn">
                         <span>→</span> Ingresar al Sistema
                     </button>
+
+                    <div style="text-align: center; margin-top: 18px;">
+                        <a href="{{ route('password.request') }}" style="color: #059669; text-decoration: none; font-size: 13.5px; font-weight: 600; transition: color 0.15s; display: inline-block;" onmouseover="this.style.color='#047857'" onmouseout="this.style.color='#059669'">¿Olvidaste tu contraseña?</a>
+                    </div>
                 </form>
 
                 <div class="login-footer">
